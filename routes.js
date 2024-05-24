@@ -13,6 +13,6 @@ router.post('/deleteproperty',todoController.deleteproperty);
  router.put("/updateproperty",todoController.updateproperty);
  router.get('/fetchpropertiesforbuyer',todoController.displaypropertiesforbuyer);
  router.get('/getsellerdetails/:id',todoController.getsellerdetails);
-
  router.post('/sendmaildeatils',todoController.sendmail);
+ 
 module.exports=router;
