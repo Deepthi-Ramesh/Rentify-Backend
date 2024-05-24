@@ -1,5 +1,5 @@
 const {connection} =require('./model');
-const bcrypt =require('bcrypt');
+const bcrypt =require('bcryptjs');
 const {mail} = require('./nodemailer');
 
 
