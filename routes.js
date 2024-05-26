@@ -15,4 +15,16 @@ router.post('/deleteproperty',todoController.deleteproperty);
  router.get('/getsellerdetails/:id',todoController.getsellerdetails);
  router.post('/sendmaildeatils',todoController.sendmail);
  
+
 module.exports=router;
+// { 
+//     "version": 2,
+//     "builds":[{ "src":"./index.js","use":"@vercel/node"}],
+//     "routes":[
+//         {
+//             "src":"/(.*)",
+//             "dest":"./index.js"
+//             }
+//         ],
+//         "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+// } 
