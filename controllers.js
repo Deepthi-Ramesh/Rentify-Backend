@@ -2,6 +2,77 @@ const {connection} =require('./model');
 const bcrypt =require('bcryptjs');
 const {mail} = require('./nodemailer');
 
+//register function
+const registeruser = async(req, res) => {
+  try{
+    var user = req?.body?.User;
+    console.log(user);
+    var password=user.password;
+  bcrypt.hash(password.toString(), 10, function(err, hash) {
+      if (err) { 
+          throw (err);
+       }
+       else{
+   
+        let query = `INSERT INTO usertable VALUES(default,'${user.firstname}','${user.email}','${user.phoneno}','${hash}','${user.type}');`;
+   
+        connection.query(query,function(err,rows) {
+          if(err) {
+            console.log(err);
+            if(res.status(500)){
+              return res.json({message:err.sqlMessage});
+            }
+            
+          }
+          
+          console.log("inserted successfully");
+          return res.status(200).json({data:[], message:"Todo created successfully"});
+         }); 
+       }
+  
+})
+ 
+  } catch(e){
+      console.log(e);
+      return res.status(500).json({data:[], message:"Internal Server Error"});
+  }
+}
+//login function
+const loginuser=async(req,res)=>{
+  try{
+    var user = req.body.User;
+    console.log(user.email);
+    var query=`SELECT id,password,type from usertable where email='${user.email}';`;
+
+    connection.query(query,function(err,rows,fields){
+       if(err)
+         console.log(err);
+        else{
+           if(rows.length>0){
+            console.log(rows);
+          bcrypt.compare(user.password.toString(),rows[0].password,(err,result)=>{
+              if(err){
+                return err;
+              }
+            if(result){
+              console.log("login successfull");
+              return res.status(200).json({data:rows})
+            }
+            })
+           }
+          ;
+ 
+        }
+    })
+
+  }
+  catch(e){
+    console.log(e);
+  }
+}
+
+
+//functions for seller
 
  const displayproperties=async(req,res)=>{
     try{
@@ -20,76 +91,6 @@ const {mail} = require('./nodemailer');
     }
     catch(e){
       console.log(e);
-    }
-  }
-
-
-  const loginuser=async(req,res)=>{
-    try{
-      var user = req.body.User;
-      console.log(user.email);
-      var query=`SELECT id,password,type from usertable where email='${user.email}';`;
-
-      connection.query(query,function(err,rows,fields){
-         if(err)
-           console.log(err);
-          else{
-             if(rows.length>0){
-              console.log(rows);
-            bcrypt.compare(user.password.toString(),rows[0].password,(err,result)=>{
-                if(err){
-                  return err;
-                }
-              if(result){
-                console.log("login successfull");
-                return res.status(200).json({data:rows})
-              }
-              })
-             }
-            ;
-   
-          }
-      })
-  
-    }
-    catch(e){
-      console.log(e);
-    }
-  }
-
-
- const registeruser = async(req, res) => {
-    try{
-      var user = req?.body?.User;
-      console.log(user);
-      var password=user.password;
-    bcrypt.hash(password.toString(), 10, function(err, hash) {
-        if (err) { 
-            throw (err);
-         }
-         else{
-     
-          let query = `INSERT INTO usertable VALUES(default,'${user.firstname}','${user.email}','${user.phoneno}','${hash}','${user.type}');`;
-     
-          connection.query(query,function(err,rows) {
-            if(err) {
-              console.log(err);
-              if(res.status(500)){
-                return res.json({message:err.sqlMessage});
-              }
-              
-            }
-            
-            console.log("inserted successfully");
-            return res.status(200).json({data:[], message:"Todo created successfully"});
-           }); 
-         }
-    
-})
-   
-    } catch(e){
-        console.log(e);
-        return res.status(500).json({data:[], message:"Internal Server Error"});
     }
   }
 
@@ -158,7 +159,8 @@ const {mail} = require('./nodemailer');
         return res.status(500).json({data:[], message:"Internal Server Error"});
     }
   }
-
+   
+  //functions for buyer 
   const displaypropertiesforbuyer=async(req,res)=>{
     try{
 
@@ -214,14 +216,13 @@ const {mail} = require('./nodemailer');
         return res.status(500).json({data:[], message:"Internal Server Error"});
     }
   }
-
+// to send mail
   const sendmail=async(req,res)=>{
     try{
       var id=req?.body?.id;
       var sellerdetails=req?.body?.sellerdetails;
       var query=`SELECT * from usertable where id=${id};`;
       var buyermail;
-      var mailid;
       connection.query(query,function(err,rows){
          if(err)
            console.log(err);
@@ -229,7 +230,7 @@ const {mail} = require('./nodemailer');
             buyermail= rows[0].email;
             buyername=rows[0].name;
             buyerno=rows[0].phoneno;
-            mail(sellerdetails.email,'Email Regarding Buyer  Details who is intersted on your property',buyername,buyermail,buyerno);
+            mail(sellerdetails.email,'Email Regarding Buyer Details who is intersted on your property',buyername,buyermail,buyerno);
             mail(buyermail,'Email Regarding Sender Details',sellerdetails.name,sellerdetails.email,sellerdetails.phoneno);
             return res.status(200).json({data:rows});
           }

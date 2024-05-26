@@ -1,30 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const todoController = require('./controllers');
+const Controller = require('./controllers');
 
 
-router.post('/app',todoController.registeruser);
-router.post('/login',todoController.loginuser);
-router.post('/deleteproperty',todoController.deleteproperty);
- router.get('/fetchproperties/:userid',todoController.displayproperties);
- router.post('/addproperty',todoController.addproperty);
- router.post('/liketheproperty',todoController.liketheproperty);
- router.put("/updateproperty",todoController.updateproperty);
- router.get('/fetchpropertiesforbuyer',todoController.displaypropertiesforbuyer);
- router.get('/getsellerdetails/:id',todoController.getsellerdetails);
- router.post('/sendmaildeatils',todoController.sendmail);
+router.post('/app',Controller.registeruser);
+router.post('/login',Controller.loginuser);
+router.post('/deleteproperty',Controller.deleteproperty);
+ router.get('/fetchproperties/:userid',Controller.displayproperties);
+ router.post('/addproperty',Controller.addproperty);
+ router.post('/liketheproperty',Controller.liketheproperty);
+ router.put("/updateproperty",Controller.updateproperty);
+ router.get('/fetchpropertiesforbuyer',Controller.displaypropertiesforbuyer);
+ router.get('/getsellerdetails/:id',Controller.getsellerdetails);
+ router.post('/sendmaildeatils',Controller.sendmail);
  
 
 module.exports=router;
-// { 
-//     "version": 2,
-//     "builds":[{ "src":"./index.js","use":"@vercel/node"}],
-//     "routes":[
-//         {
-//             "src":"/(.*)",
-//             "dest":"./index.js"
-//             }
-//         ],
-//         "rewrites": [{ "source": "/(.*)", "destination": "/" }]
-// } 
+
